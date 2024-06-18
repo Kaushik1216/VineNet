@@ -1,0 +1,50 @@
+h1{
+    text-align: center;
+}
+img{
+    background-color: #EEEEEE;
+    border: 2px solid #CCCCCC;
+    padding: 2% 2% 2% 2%;
+    border-radius: 5px;
+}
+.stCheckbox{
+    background-color: #97c7ea;
+    border: 2px solid #CCCCCC;
+    padding: 2% 2% 2% 2%;
+    border-radius: 5px;
+    width: 120px!important;
+    font-weight: 1000!important;
+}
+.stDownloadButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#stImageCaption{
+    font-size: 20px;
+}
+[data-testid="stImageCaption"]{
+font-size: larger;
+font-weight: 900;
+}
+
+[data-testid="stAppViewContainer"]{
+    /* background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
+    /* background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
+}
+
+[data-testid="stHeader"]{
+    /* background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
+    /* background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+
+    background-image: linear-gradient(to top, #ace0f9 0%, #ace0f9 100%);
+}
+/* [data-testid="element-container"]{
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+/* }  */
+/* .menu{
+ border-radius: 50%;
+} */
