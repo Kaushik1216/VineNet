@@ -76,7 +76,7 @@ if selected == "image":
 
 
     def load_model():
-            model_path = "best1.pt"
+            model_path = "best.pt"
             model = YOLO(model_path)
 
             return model
@@ -121,7 +121,7 @@ if selected == "video":
 
     # run = st.checkbox("Start") #checkbox
     #capture video
-    model_path = "best1.pt"
+    model_path = "best.pt"
     model = YOLO(model_path)# weights are stored and accessed using the path given 
     
     # if run == True: # frame will render 
@@ -147,7 +147,7 @@ if selected == "video":
         # img = cv2.Canny(img , 100, 200)
         # img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
         # return av.VideoFrame.from_ndarray(img , format="bgr24")
-        model_path = "best1.pt"
+        model_path = "best.pt"
         model = YOLO(model_path)
         results=model.predict(frame) # fitting the model 
         result = results[0]
@@ -195,7 +195,7 @@ if selected == "mask":
             file.close()
 
     def load_model():
-            model_path = "best1.pt"
+            model_path = "best.pt"
             model = YOLO(model_path)
 
             return model
