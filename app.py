@@ -17,8 +17,8 @@ import cv2
 import numpy as np
 from pathlib import Path
 from streamlit_option_menu import option_menu
-
-# 1=sidebar menu, 2=horizontal menu, 3=horizontal menu w/ custom menu
+from streamlit_webrtc import webrtc_streamer , RTCConfiguration, VideoTransformerBase
+import av
 EXAMPLE_NO = 1
 
 with open('style.css') as f:
@@ -26,11 +26,11 @@ with open('style.css') as f:
  
 def streamlit_menu(example=2):
         selected = option_menu(
-            menu_title=None,  # required
-            options=["image", "mask" , "video" ],  # required
-            icons=["image", "mask", "camera-video-fill" ],  # optional
-            menu_icon="cast",  # optional
-            default_index=0,  # optional
+            menu_title=None,
+            options=["image", "mask" , "video" ],
+            icons=["image", "mask", "camera-video-fill" ],
+            menu_icon="cast",
+            default_index=0,
             orientation="horizontal",
         )
         return selected
@@ -57,37 +57,31 @@ if selected == "image":
             file = st.file_uploader("Upload file", type=self.fileTypes)
             show_file = st.empty()
             if not file:
+                image_path = './image.png'
+                image = Image.open(image_path)
+                image = np.array(image)
+                process(image , model)
+                st.image('out.png', caption="Example Segmentated Image")
                 show_file.info("Please upload a file of type: " + ", ".join(["csv", "png", "jpg"]))
                 return
-            content = file.getvalue()
+
             if isinstance(file, BytesIO):
                 st.image(file, caption="Uploaded Image")
-                process(file , self.model)
+                image_bytes = file.read()
+                # Convert bytes to PIL Image
+                image = Image.open(io.BytesIO(image_bytes))
+                image = np.array(image)
+                process(image , self.model)
                 st.image('out.png', caption="Predicted Image")
-            else:
-                data = pd.read_csv(file)
-                st.dataframe(data.head(10))
-            # print(type(file))
             file.close()
 
-        transform = transforms.Compose([
-            transforms.Resize((960, 1920)),  # Resize to the input size expected by YOLOv8
-            transforms.ToTensor(),
-            # Add more transformations as needed (e.g., normalization)
-        ])
 
     def load_model():
-            model_path = "best.pt"
+            model_path = "best1.pt"
             model = YOLO(model_path)
 
             return model
-    def process(file , model):
-            print(type(file))
-
-            image_bytes = file.read()
-            # Convert bytes to PIL Image
-            image = Image.open(io.BytesIO(image_bytes))
-            image = np.array(image)
+    def process(image , model):
 
         # Reorder channels (assuming RGB order in PIL image)
             image = image[:, :, ::-1]
@@ -128,27 +122,49 @@ if selected == "video":
 
     st.markdown("""<h2 style='text-align: center;'>Please Check start to start video.</h2>""", unsafe_allow_html=True) #title
 
-    run = st.checkbox("Start") #checkbox
+    # run = st.checkbox("Start") #checkbox
     #capture video
-    model_path = "best.pt"
+    model_path = "best1.pt"
     model = YOLO(model_path)# weights are stored and accessed using the path given 
     
-    if run == True: # frame will render 
-        capture_vid=cv2.VideoCapture(0) # capturing the video 
-        capture_vid.set(3,640)
-        capture_vid.set(4,480)
-        while True:
-            ret,frame = capture_vid.read()
-            # frame= cv2.cvtColor(frame,cv2.COLOR_BGR2RGB) #convert bgr to rgb format 
-            results=model.predict(frame) # fitting the model 
-            result = results[0]
+    # if run == True: # frame will render 
+    #     capture_vid=cv2.VideoCapture(0) # capturing the video 
+    #     capture_vid.set(3,640)
+    #     capture_vid.set(4,480)
+    #     while True:
+    #         ret,frame = capture_vid.read()
+    #         # frame= cv2.cvtColor(frame,cv2.COLOR_BGR2RGB) #convert bgr to rgb format 
+    #         results=model.predict(frame) # fitting the model 
+    #         result = results[0]
 
-            result.save("./out.png")
-            image_path = './out.png'
+    #         result.save("./out.png")
+    #         image_path = './out.png'
 
-            image = Image.open(image_path) 
-            FRAME_WINDOW.image(image) # adding the image in frame window after complete processing
-            # time.sleep(1)
+    #         image = Image.open(image_path) 
+    #         FRAME_WINDOW.image(image) # adding the image in frame window after complete processing
+    #         time.sleep(1)
+
+    def callback(frame):
+        # img = frame.to_ndarray(format="bgr24")
+
+        # img = cv2.Canny(img , 100, 200)
+        # img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        # return av.VideoFrame.from_ndarray(img , format="bgr24")
+        model_path = "best1.pt"
+        model = YOLO(model_path)
+        results=model.predict(frame) # fitting the model 
+        result = results[0]
+
+        result.save("./out.png")
+        image_path = './out.png'
+
+        image = Image.open(image_path) 
+
+        return image
+
+    
+    webrtc_streamer(key="sample" , video_frame_callback=callable,media_stream_constraints={"video": True, "audio": False})
+
 
 if selected == "mask":
     st.title(f"You have selected {selected}")
@@ -168,37 +184,26 @@ if selected == "mask":
             file = st.file_uploader("Upload file", type=self.fileTypes)
             show_file = st.empty()
             if not file:
+                image_path = './image.png'
+                image = Image.open(image_path)
+                image = np.array(image)
+                process(image , model)
+                st.image('out.png', caption="Example Segmentated Image")
                 show_file.info("Please upload a file of type: " + ", ".join(["csv", "png", "jpg"]))
                 return
-            content = file.getvalue()
+
             if isinstance(file, BytesIO):
                 st.image(file, caption="Uploaded Image")
                 process(file , self.model)
                 st.image('out.png', caption="Predicted Image")
-            else:
-                data = pd.read_csv(file)
-                st.dataframe(data.head(10))
-            # print(type(file))
             file.close()
 
-        transform = transforms.Compose([
-            transforms.Resize((960, 1920)),  # Resize to the input size expected by YOLOv8
-            transforms.ToTensor(),
-            # Add more transformations as needed (e.g., normalization)
-        ])
-
     def load_model():
-            model_path = "best.pt"
+            model_path = "best1.pt"
             model = YOLO(model_path)
 
             return model
-    def process(file , model):
-            print(type(file))
-
-            image_bytes = file.read()
-            # Convert bytes to PIL Image
-            image = Image.open(io.BytesIO(image_bytes))
-            image = np.array(image)
+    def process(image , model):
 
         # Reorder channels (assuming RGB order in PIL image)
             image = image[:, :, ::-1]
@@ -212,7 +217,6 @@ if selected == "mask":
 
                     # Create binary mask
                     b_mask = np.zeros(img.shape[:2], np.uint8)
-                    
 
                     # Iterate each object contour (multiple detections)
                     for ci,c in enumerate(r):
@@ -256,4 +260,3 @@ if selected == "mask":
         model = load_model()
         helper = FileUpload(model)
         helper.run()
-
