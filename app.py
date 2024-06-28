@@ -40,7 +40,6 @@ selected = streamlit_menu(example=EXAMPLE_NO)
 
 if selected == "image":
     st.title(f"You have selected {selected}")
-    st.markdown("""<h4 style='text-align: center;'>Made with love by Grp P01-C</h4>""", unsafe_allow_html=True)
     
     
     class FileUpload(object):
@@ -114,8 +113,6 @@ if selected == "image":
 
 if selected == "video":
     st.title(f"You have selected {selected}")
-    st.markdown("""<h4 style='text-align: center;'>Made with love by Grp P01-C</h4>""", unsafe_allow_html=True)
-
 
     FRAME_WINDOW = st.image([]) #frame window
 
@@ -168,7 +165,6 @@ if selected == "video":
 
 if selected == "mask":
     st.title(f"You have selected {selected}")
-    st.markdown("""<h4 style='text-align: center;'>Made with love by Grp P01-C</h4>""", unsafe_allow_html=True)
 
     class FileUpload(object):
         def __init__(self , model):
