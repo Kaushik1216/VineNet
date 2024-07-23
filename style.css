@@ -29,22 +29,9 @@ font-weight: 900;
 }
 
 [data-testid="stAppViewContainer"]{
-    /* background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
-    /* background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
     background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
 }
 
 [data-testid="stHeader"]{
-    /* background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
-    /* background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
-
     background-image: linear-gradient(to top, #ace0f9 0%, #ace0f9 100%);
 }
-/* [data-testid="element-container"]{
-    /* display: flex;
-    align-items: center;
-    justify-content: center; */
-/* }  */
-/* .menu{
- border-radius: 50%;
-} */
