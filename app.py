@@ -29,7 +29,7 @@ def streamlit_menu(example=2):
 selected = streamlit_menu(example=EXAMPLE_NO)
 
 def load_model():
-    model_path = "best.pt"
+    model_path = "https://github.com/Kaushik1216/VineNet/blob/main/best.pt"
     model = YOLO(model_path)
     return model
 
