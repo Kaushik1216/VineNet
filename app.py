@@ -47,7 +47,7 @@ if selected == "image":
         def run(self):
 
             if not file:
-                image_path = './image.png'
+                image_path = 'https://github.com/Kaushik1216/VineNet/blob/main/image.png'
                 image = Image.open(image_path)
                 self.image = np.array(image)
                 self.process()
@@ -134,7 +134,7 @@ if selected == "mask":
         def run(self):
 
             if not file:
-                image_path = './image.png'
+                image_path = 'https://github.com/Kaushik1216/VineNet/blob/main/image.png'
                 image = Image.open(image_path)
                 self.image = np.array(image)
                 self.process()
