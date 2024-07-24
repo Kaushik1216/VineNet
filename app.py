@@ -93,7 +93,7 @@ if selected == "video":
         def run(self):
 
             lock = threading.Lock()
-            img_container = {"img": None}
+            img_container = {"img": np.zeros(6, np.uint8)}
 
             def video_frame_callback(frame):
                 img = frame.to_ndarray(format="bgr24")
