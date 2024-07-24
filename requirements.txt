@@ -23,7 +23,6 @@ google-crc32c
 idna
 ifaddr
 intel-openmp
-Jinja
 jsonschema
 jsonschema-specifications
 kiwisolver
