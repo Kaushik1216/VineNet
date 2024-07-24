@@ -29,7 +29,7 @@ def streamlit_menu(example=2):
 selected = streamlit_menu(example=EXAMPLE_NO)
 
 def load_model():
-    model_path = "https://github.com/Kaushik1216/VineNet/blob/main/best.pt"
+    model_path = "./best.pt"
     model = YOLO(model_path)
     return model
 
@@ -47,7 +47,7 @@ if selected == "image":
         def run(self):
 
             if not file:
-                image_path = 'https://github.com/Kaushik1216/VineNet/blob/main/image.png'
+                image_path = './image.png'
                 image = Image.open(image_path)
                 self.image = np.array(image)
                 self.process()
@@ -89,24 +89,23 @@ if selected == "video":
     class VideoClass(object):
         def __init__(self):
             self.model = load_model()
+            self.lock = threading.Lock()
+            self.img = None
 
         def run(self):
 
-            lock = threading.Lock()
-            img_container = {"img": np.zeros(6, np.uint8)}
-
             def video_frame_callback(frame):
                 img = frame.to_ndarray(format="bgr24")
-                with lock:
-                    img_container["img"] = img
+                with self.lock:
+                    self.img = img
 
                 return frame
 
             ctx = webrtc_streamer(key="example", video_frame_callback=video_frame_callback, media_stream_constraints={"video": True, "audio": False})
 
             while ctx.state.playing:
-                with lock:
-                    img = img_container["img"]
+                with self.lock:
+                    img = self.img
                 if img is None:
                     continue
 
@@ -134,7 +133,7 @@ if selected == "mask":
         def run(self):
 
             if not file:
-                image_path = 'https://github.com/Kaushik1216/VineNet/blob/main/image.png'
+                image_path = './image.png'
                 image = Image.open(image_path)
                 self.image = np.array(image)
                 self.process()
