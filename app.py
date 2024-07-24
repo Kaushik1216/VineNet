@@ -7,7 +7,7 @@ import io
 import cv2
 import numpy as np
 from streamlit_option_menu import option_menu
-from streamlit_webrtc import webrtc_streamer
+from streamlit_webrtc import webrtc_streamer, RTCConfiguration, WebRtcMode
 import threading
 import asyncio
 
@@ -86,7 +86,9 @@ if selected == "image":
 if selected == "video":
     st.title(f"You have selected {selected}")
     FRAME_WINDOW = st.image([])
-
+    RTC_CONFIGURATION = RTCConfiguration(
+       {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+    )
     class VideoClass(object):
         def __init__(self):
             self.model = load_model()
@@ -102,7 +104,8 @@ if selected == "video":
 
                 return frame
 
-            ctx = webrtc_streamer(key="example", video_frame_callback=video_frame_callback, media_stream_constraints={"video": True, "audio": False})
+            ctx = webrtc_streamer(key="example", video_frame_callback=video_frame_callback, media_stream_constraints={"video": True, "audio": False},mode=WebRtcMode.SENDRECV,
+                  rtc_configuration=RTC_CONFIGURATION,async_processing=True)
 
             while ctx.state.playing:
                 with self.lock:
