@@ -9,6 +9,7 @@ import numpy as np
 from streamlit_option_menu import option_menu
 from streamlit_webrtc import webrtc_streamer
 import threading
+import asyncio
 
 EXAMPLE_NO = 1
 
@@ -92,7 +93,7 @@ if selected == "video":
             self.lock = threading.Lock()
             self.img = None
 
-        def run(self):
+        async def run(self):
 
             def video_frame_callback(frame):
                 img = frame.to_ndarray(format="bgr24")
@@ -114,9 +115,18 @@ if selected == "video":
                     output = output[0].plot()
                 FRAME_WINDOW.image(cv2.cvtColor(output, cv2.COLOR_BGR2RGB), use_column_width=True)
 
+        async def cleanup(self):
+            tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+            [task.cancel() for task in tasks]
+            await asyncio.gather(*tasks, return_exceptions=True)
+            asyncio.get_event_loop().stop()
+
     if __name__ ==  "__main__":
         videoobject = VideoClass()
-        videoobject.run()
+        try:
+            asyncio.run(videoobject.run())
+        except KeyboardInterrupt:
+            asyncio.run(videoobject.cleanup())
 
 
 if selected == "mask":
