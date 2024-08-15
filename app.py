@@ -36,6 +36,7 @@ def load_model():
 
 if selected == "image":
     st.title(f"You have selected {selected}")
+    st.title("Note: Video (Live) segmentation may not work on the host website due to the limitations of the free hosting service, as it requires high computational power that is not provided in the free version.")
     file = st.file_uploader("Upload file", type=["jpeg", "png", "jpg"])
     show_file = st.empty()
     FRAME_WINDOW = st.image([])
