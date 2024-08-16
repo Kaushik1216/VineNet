@@ -87,6 +87,7 @@ if selected == "image":
 
 if selected == "video":
     st.title(f"You have selected {selected} for Live segmentation")
+    st.title(f"May not work with low speed Internet")
     FRAME_WINDOW = st.image([])
 
     class VideoClass(object):
