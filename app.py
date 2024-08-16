@@ -7,9 +7,11 @@ import io
 import cv2
 import numpy as np
 from streamlit_option_menu import option_menu
-from streamlit_webrtc import webrtc_streamer, RTCConfiguration, WebRtcMode
+from streamlit_webrtc import webrtc_streamer, WebRtcMode
 import threading
 import asyncio
+import av
+import time
 
 EXAMPLE_NO = 1
 
@@ -84,12 +86,9 @@ if selected == "image":
         imageobject.run()
 
 if selected == "video":
-    st.title(f"You have selected {selected}")
-    st.title("Note: Video (Live) segmentation may not work on the host website due to the limitations of the free hosting service, as it requires high computational power that is not provided in the free version.")
+    st.title(f"You have selected {selected} for Live segmentation")
     FRAME_WINDOW = st.image([])
-    RTC_CONFIGURATION = RTCConfiguration(
-       {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
-    )
+
     class VideoClass(object):
         def __init__(self):
             self.model = load_model()
@@ -103,10 +102,10 @@ if selected == "video":
                 with self.lock:
                     self.img = img
 
-                return frame
+                return av.VideoFrame.from_ndarray(img, format="bgr24")
 
-            ctx = webrtc_streamer(key="example", video_frame_callback=video_frame_callback, media_stream_constraints={"video": True, "audio": False},mode=WebRtcMode.SENDRECV,
-                  rtc_configuration=RTC_CONFIGURATION,async_processing=True)
+
+            ctx = webrtc_streamer(key="example", mode=WebRtcMode.SENDRECV , video_frame_callback=video_frame_callback, media_stream_constraints={"video": True, "audio": False})
 
             while ctx.state.playing:
                 with self.lock:
@@ -117,6 +116,8 @@ if selected == "video":
                 with torch.no_grad():
                     output = self.model.predict(img)
                     output = output[0].plot()
+                    time.sleep(1)
+
                 FRAME_WINDOW.image(cv2.cvtColor(output, cv2.COLOR_BGR2RGB), use_column_width=True)
 
         async def cleanup(self):
